@@ -28,8 +28,8 @@
                     </button>
 
                     <!-- Branding Image -->
-                    <a class="navbar-brand" href="{{ url('/') }}">
-                        Encuetas
+                    <a class="navbar-brand" href="{{ url('/home') }}">
+                        Encuestas
                     </a>
                 </div>
 

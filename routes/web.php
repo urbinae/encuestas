@@ -22,3 +22,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::apiResource('preguntas', 'PreguntaController');
 Route::apiResource('respuestas', 'RespuestaController');
 Route::post('/preguntas/activar', 'PreguntaController@activar');
+Route::get('consulta', 'RespuestaController@consulta');

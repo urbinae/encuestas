@@ -17,7 +17,7 @@ class CreateRespuestasTable extends Migration
             $table->increments('id');
 
             $table->string('descripcion');
-
+            $table->string('letra');
             $table->integer('pregunta_id')->unsigned();
             $table->foreign('pregunta_id')->references('id')->on('preguntas');
 
