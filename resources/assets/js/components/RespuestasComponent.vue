@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-8">
             <input v-if="editModeR" type="text" class="form-control" v-model="respuesta.descripcion">
-            <p v-else>{{respuesta.letra}}-{{respuesta.descripcion}}</p>
+            <p v-else>{{respuesta.letra}} - {{respuesta.descripcion}}</p>
         </div>
         <div class="col-md-4">
             <button v-if="editModeR" class="btn btn-success" v-on:click="onClickUpdateRespuesta()">Guardar</button>

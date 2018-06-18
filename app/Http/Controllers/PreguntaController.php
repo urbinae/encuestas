@@ -49,11 +49,9 @@ class PreguntaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->activar) {
-            # code...
-        }
         $pregunta = Pregunta::find($id);
         $pregunta->descripcion = $request->descripcion;
+        $pregunta->tiempo = $request->tiempo;
         $pregunta->save();
         return $pregunta;
     }

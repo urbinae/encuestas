@@ -4,10 +4,11 @@
             <div class="row">
                 <div class="col-md-7">
                     <input v-if="editModeP" type="text" class="form-control" v-model="pregunta.descripcion">
+                    <input v-if="editModeP" type="number" class="form-control" v-model="pregunta.tiempo">
                     <p v-else>
                         <input v-if="pregunta.activa" checked="true" type="radio" :value="pregunta.activa" >
                         <input v-else type="radio" :value="!pregunta.activa" v-on:click="onClickActivarPregunta()" v-model="activar">
-                        <strong>{{pregunta.descripcion}}</strong></p>
+                        <strong>{{pregunta.descripcion}} - Tiempo: {{pregunta.tiempo}} seg</strong></p>
                     <hr>
                 </div>
                 <div class="col-md-5">
@@ -76,7 +77,8 @@
             },
             onClickUpdatePregunta(){
                 const params = {
-                    descripcion: this.pregunta.descripcion
+                    descripcion: this.pregunta.descripcion,
+                    tiempo: this.pregunta.tiempo
                 };
                 axios.put(`/preguntas/${this.pregunta.id}`, params)
                     .then((response) => {
