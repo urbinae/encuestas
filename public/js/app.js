@@ -43236,6 +43236,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -43244,25 +43245,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     mounted: function mounted() {
-        var _this = this;
-
         console.log('Component encuestas.');
-        axios.get('/preguntas').then(function (response) {
-            _this.preguntas = response.data;
-            //console.log(response.data);
-        });
+        this.getPreguntas();
     },
 
 
     methods: {
+        getPreguntas: function getPreguntas() {
+            var _this = this;
+
+            console.log('----getPreguntas()');
+            axios.get('/preguntas').then(function (response) {
+                _this.preguntas = response.data;
+                console.info(_this.preguntas);
+            });
+        },
         addPregunta: function addPregunta(pregunta) {
-            this.preguntas.push(pregunta);
+            //this.preguntas.push(pregunta);
+            this.getPreguntas();
         },
-        updatePregunta: function updatePregunta(index, pregunta) {
-            this.preguntas[index] = pregunta;
+        updatePregunta: function updatePregunta(pregunta) {
+            var _this2 = this;
+
+            //this.preguntas[index] = pregunta;
+            var params = {
+                descripcion: pregunta.descripcion,
+                tiempo: pregunta.tiempo
+            };
+            axios.put('/preguntas/' + pregunta.id, params).then(function (response) {
+                //this.editModeP = false;
+                //const pregunta = response.data;
+                _this2.getPreguntas();
+            });
         },
-        deletePregunta: function deletePregunta(index) {
-            this.preguntas.splice(index, 1);
+        deletePregunta: function deletePregunta(pregunta) {
+            var _this3 = this;
+
+            //this.preguntas.splice(index, 1);
+            axios.delete('/preguntas/' + pregunta.id).then(function () {
+                _this3.getPreguntas();
+            });
         }
     }
 });
@@ -43290,10 +43312,13 @@ var render = function() {
             attrs: { pregunta: pregunta },
             on: {
               deletePregunta: function($event) {
-                _vm.deletePregunta(index)
+                _vm.deletePregunta(pregunta)
               },
               updatePregunta: function($event) {
-                _vm.updatePregunta(index)
+                _vm.updatePregunta(pregunta)
+              },
+              getPreguntas: function($event) {
+                _vm.getPreguntas()
               }
             }
           })
@@ -43659,6 +43684,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['pregunta'],
@@ -43668,34 +43701,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             newResp: false,
             respuestas: [],
             descripcionR: '',
-            activar: false
+            activar: true
         };
     },
     mounted: function mounted() {
         console.log('Component Preguntas.');
+        //this.$emit('getPreguntas');
     },
 
     methods: {
         //Gestion de Preguntas
-        onClickDeletePregunta: function onClickDeletePregunta() {
-            var _this = this;
-
-            axios.delete('/preguntas/' + this.pregunta.id).then(function () {
-                _this.$emit('deletePregunta');
-            });
+        onClickDeletePregunta: function onClickDeletePregunta(pregunta) {
+            this.$emit('deletePregunta', pregunta);
         },
         onClickUpdatePregunta: function onClickUpdatePregunta() {
-            var _this2 = this;
-
-            var params = {
-                descripcion: this.pregunta.descripcion,
-                tiempo: this.pregunta.tiempo
-            };
-            axios.put('/preguntas/' + this.pregunta.id, params).then(function (response) {
-                _this2.editModeP = false;
-                var pregunta = response.data;
-                _this2.$emit('updatePregunta', pregunta);
-            });
+            this.$emit('updatePregunta');
+            this.editModeP = false;
         },
         onClickEditPregunta: function onClickEditPregunta() {
             this.editModeP = true;
@@ -43709,37 +43730,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.newResp = true;
         },
         addRespuesta: function addRespuesta(respuesta) {
-            this.newResp = false, this.respuestas.push(respuesta);
+
+            //this.respuestas.push(respuesta);
         },
         newRespuesta: function newRespuesta() {
-            var _this3 = this;
+            var _this = this;
 
+            this.newResp = false;
             var params = {
                 descripcion: this.descripcionR,
                 pregunta: this.pregunta.id
             };
             console.info(params);
             axios.post('/respuestas', params).then(function (response) {
-                var respuesta = response.data;
-                _this3.addRespuesta(respuesta);
+                //const respuesta = response.data;
+                //this.addRespuesta(respuesta);
+                _this.$emit('getPreguntas');
             });
 
             this.newResp = false, this.descripcionR = '';
         },
-        deleteRespuesta: function deleteRespuesta(index) {
-            this.respuestas.splice(index, 1);
+        deleteRespuesta: function deleteRespuesta(respuesta) {
+            var _this2 = this;
+
+            axios.delete('/respuestas/' + respuesta.id).then(function () {
+                _this2.$emit('getPreguntas');
+            });
+            //this.respuestas.splice(index, 1);
         },
-        onClickActivarPregunta: function onClickActivarPregunta() {
-            var _this4 = this;
+        onClickActivarPregunta: function onClickActivarPregunta(pregunta) {
+            var _this3 = this;
 
             var params = {
-                pregunta: this.pregunta.id,
-                activar: !this.activar
+                pregunta: pregunta.id,
+                activar: true
             };
             console.info(params);
             axios.post('/preguntas/activar', params).then(function (response) {
-                var pregunta = response.data;
-                _this4.$emit('updatePregunta', pregunta);
+                //const pregunta = response.data;
+                //this.$emit('updatePregunta', pregunta);
+                _this3.$emit('getPreguntas');
             });
         }
     }
@@ -43753,7 +43783,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "panel panel-default" }, [
+  return _c("div", { staticClass: "panel panel-info" }, [
     _c(
       "div",
       { staticClass: "panel-body" },
@@ -43761,89 +43791,87 @@ var render = function() {
         _c("div", { staticClass: "row" }, [
           _c("div", { staticClass: "col-md-7" }, [
             _vm.editModeP
-              ? _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.pregunta.descripcion,
-                      expression: "pregunta.descripcion"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text" },
-                  domProps: { value: _vm.pregunta.descripcion },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+              ? _c("div", [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.pregunta.descripcion,
+                        expression: "pregunta.descripcion"
                       }
-                      _vm.$set(_vm.pregunta, "descripcion", $event.target.value)
-                    }
-                  }
-                })
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.editModeP
-              ? _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.pregunta.tiempo,
-                      expression: "pregunta.tiempo"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "number" },
-                  domProps: { value: _vm.pregunta.tiempo },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(_vm.pregunta, "tiempo", $event.target.value)
-                    }
-                  }
-                })
-              : _c("p", [
-                  _vm.pregunta.activa
-                    ? _c("input", {
-                        attrs: { checked: "true", type: "radio" },
-                        domProps: { value: _vm.pregunta.activa }
-                      })
-                    : _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.activar,
-                            expression: "activar"
-                          }
-                        ],
-                        attrs: { type: "radio" },
-                        domProps: {
-                          value: !_vm.pregunta.activa,
-                          checked: _vm._q(_vm.activar, !_vm.pregunta.activa)
-                        },
-                        on: {
-                          click: function($event) {
-                            _vm.onClickActivarPregunta()
-                          },
-                          change: function($event) {
-                            _vm.activar = !_vm.pregunta.activa
-                          }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text" },
+                    domProps: { value: _vm.pregunta.descripcion },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
                         }
-                      }),
+                        _vm.$set(
+                          _vm.pregunta,
+                          "descripcion",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.pregunta.tiempo,
+                        expression: "pregunta.tiempo"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "number" },
+                    domProps: { value: _vm.pregunta.tiempo },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.pregunta, "tiempo", $event.target.value)
+                      }
+                    }
+                  })
+                ])
+              : _c("div", [
+                  _c("p"),
+                  _vm.pregunta.activa
+                    ? _c("div", [
+                        _c("input", {
+                          attrs: { type: "checkbox", checked: "" },
+                          domProps: { value: _vm.pregunta.activa }
+                        }),
+                        _vm._v(" Activada\n                    ")
+                      ])
+                    : _c("div", [
+                        _c("input", {
+                          attrs: { type: "checkbox" },
+                          domProps: { value: !_vm.pregunta.activa },
+                          on: {
+                            click: function($event) {
+                              _vm.onClickActivarPregunta(_vm.pregunta)
+                            }
+                          }
+                        }),
+                        _vm._v(" Desactivada\n                    ")
+                      ]),
                   _vm._v(" "),
                   _c("strong", [
                     _vm._v(
                       _vm._s(_vm.pregunta.descripcion) +
-                        " - Tiempo: " +
+                        "- " +
                         _vm._s(_vm.pregunta.tiempo) +
-                        " seg"
+                        " Seg."
                     )
-                  ])
+                  ]),
+                  _c("p")
                 ]),
             _vm._v(" "),
             _c("hr")
@@ -43882,7 +43910,8 @@ var render = function() {
                 staticClass: "btn btn-danger",
                 on: {
                   click: function($event) {
-                    _vm.onClickDeletePregunta()
+                    $event.preventDefault()
+                    _vm.onClickDeletePregunta(_vm.pregunta)
                   }
                 }
               },
@@ -43977,7 +44006,7 @@ var render = function() {
             attrs: { respuesta: respuesta },
             on: {
               deleteR: function($event) {
-                _vm.deleteRespuesta(index)
+                _vm.deleteRespuesta(respuesta)
               },
               updateR: function($event) {
                 _vm.updateRespuesta(index)
@@ -44087,7 +44116,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     props: ['respuesta'],
     data: function data() {
         return {
-            editModeR: false
+            editModeR: false,
+            preguntas: []
         };
     },
     mounted: function mounted() {
@@ -44095,12 +44125,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
-        onClickDeleteRespuesta: function onClickDeleteRespuesta() {
+        getPreguntas: function getPreguntas() {
             var _this = this;
 
-            axios.delete('/respuestas/' + this.respuesta.id).then(function () {
-                _this.$emit('deleteR');
+            axios.get('/preguntas').then(function (response) {
+                _this.preguntas = response.data;
+                //console.log(response.data);
             });
+        },
+        onClickDeleteRespuesta: function onClickDeleteRespuesta() {
+            this.$emit('deleteR');
         },
         onClickUpdateRespuesta: function onClickUpdateRespuesta() {
             var _this2 = this;
@@ -44195,7 +44229,8 @@ var render = function() {
           staticClass: "btn btn-danger",
           on: {
             click: function($event) {
-              _vm.onClickDeleteRespuesta()
+              $event.preventDefault()
+              _vm.onClickDeleteRespuesta(_vm.respuesta)
             }
           }
         },
@@ -44413,7 +44448,7 @@ if (false) {
 /* 54 */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed: ModuleBuildError: Module build failed: Error: Missing binding C:\\xampp\\htdocs\\encuestas\\node_modules\\node-sass\\vendor\\win32-x64-57\\binding.node\nNode Sass could not find a binding for your current environment: Windows 64-bit with Node.js 8.x\n\nFound bindings for the following environments:\n  - Windows 32-bit with Node.js 8.x\n  - Windows 64-bit with Node.js 8.x\n\nThis usually happens because your environment has changed since running `npm install`.\nRun `npm rebuild node-sass --force` to build the binding for your current environment.\n    at module.exports (C:\\xampp\\htdocs\\encuestas\\node_modules\\node-sass\\lib\\binding.js:15:13)\n    at Object.<anonymous> (C:\\xampp\\htdocs\\encuestas\\node_modules\\node-sass\\lib\\index.js:14:35)\n    at Module._compile (module.js:652:30)\n    at Object.Module._extensions..js (module.js:663:10)\n    at Module.load (module.js:565:32)\n    at tryModuleLoad (module.js:505:12)\n    at Function.Module._load (module.js:497:3)\n    at Module.require (module.js:596:17)\n    at require (internal/module.js:11:18)\n    at Object.<anonymous> (C:\\xampp\\htdocs\\encuestas\\node_modules\\sass-loader\\lib\\loader.js:3:14)\n    at Module._compile (module.js:652:30)\n    at Object.Module._extensions..js (module.js:663:10)\n    at Module.load (module.js:565:32)\n    at tryModuleLoad (module.js:505:12)\n    at Function.Module._load (module.js:497:3)\n    at Module.require (module.js:596:17)\n    at require (internal/module.js:11:18)\n    at loadLoader (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\loadLoader.js:13:17)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:165:10)\n    at C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:173:18\n    at loadLoader (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\loadLoader.js:36:3)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:165:10)\n    at C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:173:18\n    at loadLoader (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\loadLoader.js:36:3)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:165:10)\n    at C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:173:18\n    at loadLoader (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\loadLoader.js:36:3)\n    at runLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\NormalModule.js:195:19)\n    at C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:364:11\n    at C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:170:18\n    at loadLoader (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\loadLoader.js:27:11)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:165:10)\n    at C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:173:18\n    at loadLoader (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\loadLoader.js:36:3)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:165:10)\n    at C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:173:18\n    at loadLoader (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\loadLoader.js:36:3)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:165:10)\n    at C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:173:18\n    at loadLoader (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\loadLoader.js:36:3)\n    at iteratePitchingLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:169:2)\n    at runLoaders (C:\\xampp\\htdocs\\encuestas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:362:2)\n    at NormalModule.doBuild (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\NormalModule.js:182:3)\n    at NormalModule.build (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\NormalModule.js:275:15)\n    at Compilation.buildModule (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\Compilation.js:151:10)\n    at moduleFactory.create (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\Compilation.js:456:10)\n    at factory (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\NormalModuleFactory.js:241:5)\n    at applyPluginsAsyncWaterfall (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\NormalModuleFactory.js:94:13)\n    at C:\\xampp\\htdocs\\encuestas\\node_modules\\tapable\\lib\\Tapable.js:268:11\n    at NormalModuleFactory.params.normalModuleFactory.plugin (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\CompatibilityPlugin.js:52:5)\n    at NormalModuleFactory.applyPluginsAsyncWaterfall (C:\\xampp\\htdocs\\encuestas\\node_modules\\tapable\\lib\\Tapable.js:272:13)\n    at resolver (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\NormalModuleFactory.js:69:10)\n    at process.nextTick (C:\\xampp\\htdocs\\encuestas\\node_modules\\webpack\\lib\\NormalModuleFactory.js:194:7)\n    at _combinedTickCallback (internal/process/next_tick.js:131:7)");
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

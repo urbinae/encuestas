@@ -7,7 +7,7 @@
         <div class="col-md-4">
             <button v-if="editModeR" class="btn btn-success" v-on:click="onClickUpdateRespuesta()">Guardar</button>
             <button v-else class="btn btn-warning" v-on:click="onClickEditRespuesta()">Editar</button>
-            <button class="btn btn-danger" v-on:click="onClickDeleteRespuesta()">Eliminar</button>
+            <button class="btn btn-danger" v-on:click.prevent="onClickDeleteRespuesta(respuesta)">Eliminar</button>
         </div>
 
     </div>
@@ -18,18 +18,25 @@
         props: [`respuesta`],
         data(){
             return{
-                editModeR: false
+                editModeR: false,
+                preguntas: []
             };
         },
+
         mounted() {
             console.log('Component respuestas.')
         },
         methods:{
+            getPreguntas(){
+                axios.get(`/preguntas`)
+                .then((response) => {
+                    this.preguntas = response.data;
+                    //console.log(response.data);
+                });
+            },
             onClickDeleteRespuesta(){
-                axios.delete(`/respuestas/${this.respuesta.id}`)
-                    .then(() => {
-                        this.$emit('deleteR');
-                    });
+                this.$emit('deleteR');                
+                
             },
             onClickUpdateRespuesta(){
                 const params = {

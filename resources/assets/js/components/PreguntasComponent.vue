@@ -1,20 +1,28 @@
 <template>
-    <div class="panel panel-default">
+    <div class="panel panel-info">
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-7">
-                    <input v-if="editModeP" type="text" class="form-control" v-model="pregunta.descripcion">
-                    <input v-if="editModeP" type="number" class="form-control" v-model="pregunta.tiempo">
-                    <p v-else>
-                        <input v-if="pregunta.activa" checked="true" type="radio" :value="pregunta.activa" >
-                        <input v-else type="radio" :value="!pregunta.activa" v-on:click="onClickActivarPregunta()" v-model="activar">
-                        <strong>{{pregunta.descripcion}} - Tiempo: {{pregunta.tiempo}} seg</strong></p>
+                    <div v-if="editModeP">
+                        <input type="text" class="form-control" v-model="pregunta.descripcion">
+                        <input type="number" class="form-control" v-model="pregunta.tiempo">
+                    </div>
+                    <div v-else>
+                    <p>
+                        <div v-if="pregunta.activa" >
+                            <input type="checkbox" :value="pregunta.activa" checked> Activada
+                        </div>
+                        <div v-else>
+                            <input type="checkbox" :value="!pregunta.activa" v-on:click="onClickActivarPregunta(pregunta)"> Desactivada
+                        </div>
+                        <strong>{{pregunta.descripcion}}- {{pregunta.tiempo}} Seg.</strong></p>
+                    </div>
                     <hr>
                 </div>
                 <div class="col-md-5">
                     <button v-if="editModeP" class="btn btn-success" v-on:click="onClickUpdatePregunta()">Guardar</button>
                     <button v-else class="btn btn-warning" v-on:click="onClickEditPregunta()">Editar</button>
-                    <button class="btn btn-danger" v-on:click="onClickDeletePregunta()">Eliminar</button>
+                    <button class="btn btn-danger" v-on:click.prevent="onClickDeletePregunta(pregunta)">Eliminar</button>
                     <button v-if="!newResp" class="btn btn-info" v-on:click="onClickNewResp()">Nueva resp</button>
                 </div>
                 
@@ -42,7 +50,7 @@
                 v-for="(respuesta, index) in pregunta.respuestas" 
                 :key="respuesta.id"
                 :respuesta="respuesta"
-                @deleteR="deleteRespuesta(index)"
+                @deleteR="deleteRespuesta(respuesta)"
                 @updateR="updateRespuesta(index)">
                     
             </respuestas-component>         
@@ -60,32 +68,23 @@
                 newResp: false,
                 respuestas: [],
                 descripcionR: '',
-                activar:false
+                activar:true
             };
         },
         mounted() {
             console.log('Component Preguntas.')
+            //this.$emit('getPreguntas');
             
         },
         methods:{
             //Gestion de Preguntas
-            onClickDeletePregunta(){
-                axios.delete(`/preguntas/${this.pregunta.id}`)
-                    .then(() => {
-                        this.$emit('deletePregunta');
-                    });
+            onClickDeletePregunta(pregunta){
+                this.$emit('deletePregunta', pregunta);
+                
             },
             onClickUpdatePregunta(){
-                const params = {
-                    descripcion: this.pregunta.descripcion,
-                    tiempo: this.pregunta.tiempo
-                };
-                axios.put(`/preguntas/${this.pregunta.id}`, params)
-                    .then((response) => {
-                        this.editModeP = false;
-                        const pregunta = response.data;
-                        this.$emit('updatePregunta', pregunta);
-                    });
+                this.$emit('updatePregunta');
+                this.editModeP = false;                
             },
             onClickEditPregunta(){
                 this.editModeP = true
@@ -98,10 +97,11 @@
                 this.newResp = true
             },
             addRespuesta(respuesta){
-                this.newResp = false,
-                this.respuestas.push(respuesta);
+                
+                //this.respuestas.push(respuesta);
             },
             newRespuesta(){
+                this.newResp = false;
                 const params = {
                     descripcion: this.descripcionR,
                     pregunta: this.pregunta.id
@@ -109,27 +109,33 @@
                 console.info(params);
                 axios.post('/respuestas', params)
                     .then((response) => {
-                        const respuesta = response.data;
-                        this.addRespuesta(respuesta);
+                        //const respuesta = response.data;
+                        //this.addRespuesta(respuesta);
+                        this.$emit('getPreguntas');
                     });
                 
                 this.newResp = false,
                 
                 this.descripcionR = ''
             },
-            deleteRespuesta(index){
-                this.respuestas.splice(index, 1);
+            deleteRespuesta(respuesta){
+                axios.delete(`/respuestas/`+respuesta.id)
+                    .then(() => {
+                        this.$emit('getPreguntas');
+                    });
+                //this.respuestas.splice(index, 1);
             },
-            onClickActivarPregunta(){
+            onClickActivarPregunta(pregunta){
                 const params = {
-                    pregunta: this.pregunta.id,
-                    activar: !this.activar
+                    pregunta: pregunta.id,
+                    activar: true
                 };
                 console.info(params);
                 axios.post('/preguntas/activar', params)
                     .then((response) => {
-                        const pregunta = response.data;
-                        this.$emit('updatePregunta', pregunta);
+                        //const pregunta = response.data;
+                        //this.$emit('updatePregunta', pregunta);
+                        this.$emit('getPreguntas');
                     });
             }
         }

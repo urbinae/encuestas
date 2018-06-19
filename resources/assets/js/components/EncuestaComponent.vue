@@ -10,8 +10,9 @@
 	        	v-for="(pregunta, index) in preguntas" 
 	        	:key="pregunta.id"
 	        	:pregunta="pregunta"
-                @deletePregunta="deletePregunta(index)"
-                @updatePregunta="updatePregunta(index)">
+                @deletePregunta="deletePregunta(pregunta)"
+                @updatePregunta="updatePregunta(pregunta)"
+                @getPreguntas="getPreguntas()">
                 
 	        </preguntas-component>
 	    </div>
@@ -28,23 +29,42 @@
     	},
 
         mounted() {
-            console.log('Component encuestas.')
-            axios.get(`/preguntas`)
-                .then((response) => {
-                    this.preguntas = response.data;
-                    //console.log(response.data);
-                });
+            console.log('Component encuestas.');
+            this.getPreguntas();
         },
 
         methods:{
-        	addPregunta(pregunta){
-        		this.preguntas.push(pregunta);
-        	},
-            updatePregunta(index, pregunta){
-                this.preguntas[index] = pregunta;
+            getPreguntas(){
+                console.log('----getPreguntas()');
+                axios.get(`/preguntas`)
+                .then((response) => {
+                    this.preguntas = response.data;
+                    console.info(this.preguntas);
+                });
             },
-            deletePregunta(index){
-                this.preguntas.splice(index, 1);
+        	addPregunta(pregunta){
+        		//this.preguntas.push(pregunta);
+                this.getPreguntas();
+        	},
+            updatePregunta(pregunta){
+                //this.preguntas[index] = pregunta;
+                const params = {
+                    descripcion: pregunta.descripcion,
+                    tiempo: pregunta.tiempo
+                };
+                axios.put(`/preguntas/`+pregunta.id, params)
+                    .then((response) => {
+                        //this.editModeP = false;
+                        //const pregunta = response.data;
+                        this.getPreguntas();
+                    });
+            },
+            deletePregunta(pregunta){
+                //this.preguntas.splice(index, 1);
+                axios.delete(`/preguntas/`+pregunta.id)
+                    .then(() => {
+                        this.getPreguntas();
+                });
             },
         }
     }
