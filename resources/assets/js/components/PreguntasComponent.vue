@@ -10,7 +10,7 @@
                     <div v-else>
                     <p>
                         <div v-if="pregunta.activa" >
-                            Activada <button class="btn btn-success" v-on:click="onClickActivarPregunta(pregunta)">Desactivar</button> 
+                            Activada 
                         </div>
                         <div v-else>
                             Desactivada <button class="btn btn-success" v-on:click="onClickActivarPregunta(pregunta)">Activar</button> 

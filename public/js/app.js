@@ -43844,18 +43844,8 @@ var render = function() {
                   _c("p"),
                   _vm.pregunta.activa
                     ? _c("div", [
-                        _vm._v("\n                        Activada "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-success",
-                            on: {
-                              click: function($event) {
-                                _vm.onClickActivarPregunta(_vm.pregunta)
-                              }
-                            }
-                          },
-                          [_vm._v("Desactivar")]
+                        _vm._v(
+                          "\n                        Activada \n                    "
                         )
                       ])
                     : _c("div", [
