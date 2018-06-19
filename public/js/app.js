@@ -43844,23 +43844,34 @@ var render = function() {
                   _c("p"),
                   _vm.pregunta.activa
                     ? _c("div", [
-                        _c("input", {
-                          attrs: { type: "checkbox", checked: "" },
-                          domProps: { value: _vm.pregunta.activa }
-                        }),
-                        _vm._v(" Activada\n                    ")
+                        _vm._v("\n                        Activada "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success",
+                            on: {
+                              click: function($event) {
+                                _vm.onClickActivarPregunta(_vm.pregunta)
+                              }
+                            }
+                          },
+                          [_vm._v("Desactivar")]
+                        )
                       ])
                     : _c("div", [
-                        _c("input", {
-                          attrs: { type: "checkbox" },
-                          domProps: { value: !_vm.pregunta.activa },
-                          on: {
-                            click: function($event) {
-                              _vm.onClickActivarPregunta(_vm.pregunta)
+                        _vm._v("\n                        Desactivada "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success",
+                            on: {
+                              click: function($event) {
+                                _vm.onClickActivarPregunta(_vm.pregunta)
+                              }
                             }
-                          }
-                        }),
-                        _vm._v(" Desactivada\n                    ")
+                          },
+                          [_vm._v("Activar")]
+                        )
                       ]),
                   _vm._v(" "),
                   _c("strong", [

@@ -10,10 +10,10 @@
                     <div v-else>
                     <p>
                         <div v-if="pregunta.activa" >
-                            <input type="checkbox" :value="pregunta.activa" checked> Activada
+                            Activada <button class="btn btn-success" v-on:click="onClickActivarPregunta(pregunta)">Desactivar</button> 
                         </div>
                         <div v-else>
-                            <input type="checkbox" :value="!pregunta.activa" v-on:click="onClickActivarPregunta(pregunta)"> Desactivada
+                            Desactivada <button class="btn btn-success" v-on:click="onClickActivarPregunta(pregunta)">Activar</button> 
                         </div>
                         <strong>{{pregunta.descripcion}}- {{pregunta.tiempo}} Seg.</strong></p>
                     </div>
