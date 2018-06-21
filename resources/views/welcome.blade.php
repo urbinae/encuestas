@@ -9,7 +9,8 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
+        <!-- Styles -->
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <!-- Styles -->
         <style>
             html, body {
@@ -65,14 +66,29 @@
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
+        <div class="flex-center">
 
             <div class="content">
-                <div class="title m-b-md">
+                <div class="title">
                     Encuesta
                 </div>
-
+                <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                       <h4>{{$pregunta->descripcion}} - {{$pregunta->tiempo}} Seg</h4>
+                       <hr>
+                       @foreach($pregunta->respuestas as $respuesta)
+                            <div class="radio">
+                              <label><input type="radio" name="optradio">{{$respuesta->letra}} -> {{$respuesta->descripcion}}</label>
+                            </div> <br>
+                       @endforeach
+                    </div> 
+                    <button class="btn btn-success">Enviar</button>   
+                </div>
             </div>
-        </div>
+            </div>
+            
+            <!-- Scripts -->
+        <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-
+ use App\Pregunta;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,7 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	$pregunta = Pregunta::where('activa', true)->get()[0]	;
+	//dd($pregunta);
+    return view('welcome', compact('pregunta'));
 });
 
 Auth::routes();
