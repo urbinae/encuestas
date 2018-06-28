@@ -19,6 +19,7 @@ Vue.component('form-preguntas-component', require('./components/FormPreguntasCom
 Vue.component('preguntas-component', require('./components/PreguntasComponent.vue'));
 Vue.component('respuestas-component', require('./components/RespuestasComponent.vue'));
 Vue.component('form-respuestas-component', require('./components/FormRespuestasComponent.vue'));
+Vue.component('encuestados-component', require('./components/EncuestadosComponent.vue'));
 
 const app = new Vue({
     el: '#app'

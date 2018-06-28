@@ -10,10 +10,10 @@
                     <div v-else>
                     <p>
                         <div v-if="pregunta.activa" >
-                            Activada 
+                             <button class="btn btn-danger" v-on:click="desactivarPregunta(pregunta)">Desactivar</button>
                         </div>
                         <div v-else>
-                            Desactivada <button class="btn btn-success" v-on:click="onClickActivarPregunta(pregunta)">Activar</button> 
+                             <button class="btn btn-success" v-on:click="activarPregunta(pregunta)">Activar</button> 
                         </div>
                         <strong>{{pregunta.descripcion}}- {{pregunta.tiempo}} Seg.</strong></p>
                     </div>
@@ -123,9 +123,8 @@
                     .then(() => {
                         this.$emit('getPreguntas');
                     });
-                //this.respuestas.splice(index, 1);
             },
-            onClickActivarPregunta(pregunta){
+            activarPregunta(pregunta){
                 const params = {
                     pregunta: pregunta.id,
                     activar: true
@@ -133,8 +132,18 @@
                 console.info(params);
                 axios.post('/preguntas/activar', params)
                     .then((response) => {
-                        //const pregunta = response.data;
-                        //this.$emit('updatePregunta', pregunta);
+                        this.$emit('getPreguntas');
+                        this.$emit('preguntaActual', pregunta);
+                    });
+            },
+            desactivarPregunta(pregunta){
+                const params = {
+                    pregunta: pregunta.id,
+                    desactivar: false
+                };
+                console.info(params);
+                axios.post('/preguntas/desactivar', params)
+                    .then((response) => {
                         this.$emit('getPreguntas');
                     });
             }

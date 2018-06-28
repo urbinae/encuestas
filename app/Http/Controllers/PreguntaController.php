@@ -19,7 +19,8 @@ class PreguntaController extends Controller
      */
     public function index()
     {
-        $preguntas = Pregunta::with('respuestas')->where('user_id', auth()->id())->get();
+        $preguntas = Pregunta::with('respuestas')->where('user_id', auth()->id())->get()[0];
+        dd($preguntas);
         return $preguntas->toJson();
     }
 
@@ -93,5 +94,35 @@ class PreguntaController extends Controller
         $pregunta->activa = $request->activar;
         $pregunta->save();
         return $pregunta;
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id identificador de la pregunta a desactivar
+     * @return \Illuminate\Http\Response
+     */
+    public function desactivar(Request $request){
+        $pregunta = Pregunta::find($request->pregunta);
+        $pregunta->activa = $request->desactivar;
+        $pregunta->save();
+        return $pregunta;
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id identificador de la pregunta a activar
+     * @return \Illuminate\Http\Response
+     */
+    public function activa(Request $request){
+        $pregunta = Pregunta::where('activa', true)->get()[0];
+        $response['pregunta'] = $pregunta;
+
+        $respuestas = $pregunta->respuestas;
+        $response['respuestas'] = $respuestas;
+        return $response;
     }
 }
