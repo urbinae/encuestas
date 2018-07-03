@@ -8,23 +8,33 @@
 	            </div>
 	            <div class="panel panel-default">
 	                <div class="panel-body">
-	                    <div class="row" v-if="!pregunta.activa">
-	                        No hay pregunta para responder
-	                    </div>
-	                    <div class="row" @preguntaActual="preguntaActual()" v-else>
-	                        {{pregunta.descripcion}} - {{pregunta.tiempo}} Seg.
-	                        <div v-for="resp in pregunta.respuestas">
-		                        <div class="radio">
-		                          <label><input type="radio" name="optradio"> {{resp.letra}} - {{resp.descripcion}}</label>
-		                      </div> <br>
+	                	<form action="" v-on:submit.prevent="responder()">
+		                    <div class="row" v-if="activa">
+		                    	<div v-if="respondio">
+		                    		Ya respondiste a la pregunta
+		                    	</div>
+		                    	<div v-else>
+		                    		{{pregunta.descripcion}} - {{pregunta.tiempo}} Seg.
+		                        <div v-for="resp in pregunta.respuestas">
+			                        <div class="radio">
+			                          	<label>
+			                          		<input type="radio" name="respuesta" v-bind:value="resp.letra" v-model="respuesta"> {{resp.letra}} - {{resp.descripcion}}
+			                        	</label>
+			                      </div> <br>
+			                    </div>
+			                    <button class="btn btn-info">responder</button>
+		                    	</div>
+		                    	 
 		                    </div>
-	                  </div> 
-	                  <button class="btn btn-success">Enviar</button> 
+		                    <div class="row" v-else>
+		                        No hay preguntas para responder
+		                        
+		                  	</div> 
+	                  		
+	                  	</form>
 	              	</div>
 	          	</div>
-	          	<pre>
-	          		{{pregunta}}
-	          	</pre>
+	          	
 	      </div>
 	  	</div>
 	</div>
@@ -35,8 +45,10 @@
         data(){
             return{
             	pregunta:null,
-            	activa:false,
-            	respuestas:[]
+            	activa:true,
+            	respuestas:[],
+            	respuesta:'',
+            	respondio:true
             };
         },
         mounted() {
@@ -54,6 +66,17 @@
 	                    console.info(this.pregunta);
 	                    
                 });                
+            },
+            responder(){
+                const params = {
+                    letra: this.respuesta,
+                    pregunta: this.pregunta.id
+                };
+                console.info(params);
+                axios.post('/preguntas/responder', params)
+                    .then((response) => {
+                    	console.info(response);
+                    });
             },
         }
     }

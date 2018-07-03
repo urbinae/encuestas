@@ -17,7 +17,7 @@
 	        </preguntas-component>
 	    </div>
 	</div>
-
+    
 </template>
 
 <script>

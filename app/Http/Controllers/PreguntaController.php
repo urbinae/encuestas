@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Pregunta;
 use App\Respuesta;
+use App\Resultado;
 use DB;
 
 class PreguntaController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
     /**
      * Display a listing of the resource.
@@ -19,8 +20,7 @@ class PreguntaController extends Controller
      */
     public function index()
     {
-        $preguntas = Pregunta::with('respuestas')->where('user_id', auth()->id())->get()[0];
-        dd($preguntas);
+        $preguntas = Pregunta::with('respuestas')->where('user_id', auth()->id())->get();
         return $preguntas->toJson();
     }
 
@@ -125,4 +125,20 @@ class PreguntaController extends Controller
         $response['respuestas'] = $respuestas;
         return $response;
     }
+
+    /**
+     * Responder pregunta.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function responder(Request $request){
+        $resultado = new Resultado();
+        $resultado->letra = $request->letra;
+        $resultado->pregunta_id = $request->pregunta;
+        $resultado->user_id = 1;
+        $resultado->save();
+        return $resultado;
+    }
+
 }

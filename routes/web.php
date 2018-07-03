@@ -22,7 +22,10 @@ Route::get('/admin', 'HomeController@index')->name('admin');
 
 Route::apiResource('preguntas', 'PreguntaController');
 Route::apiResource('respuestas', 'RespuestaController');
+
 Route::post('/preguntas/activar', 'PreguntaController@activar');
 Route::post('/preguntas/desactivar', 'PreguntaController@desactivar');
 Route::post('/preguntas/activa', 'PreguntaController@activa');
+Route::post('/preguntas/responder', 'PreguntaController@responder');
+
 Route::get('consulta', 'RespuestaController@consulta');
