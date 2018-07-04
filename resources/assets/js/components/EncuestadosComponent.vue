@@ -10,7 +10,7 @@
 	                <div class="panel-body">
 	                	<form action="" v-on:submit.prevent="responder()">
 		                    <div class="row" v-if="activa">
-		                    	<div v-if="respondio">
+		                    	<div v-if="!respondio">
 		                    		Ya respondiste a la pregunta
 		                    	</div>
 		                    	<div v-else>

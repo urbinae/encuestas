@@ -136,6 +136,7 @@ class PreguntaController extends Controller
         $resultado = new Resultado();
         $resultado->letra = $request->letra;
         $resultado->pregunta_id = $request->pregunta;
+        $resultado->ip = '1.1.1.1';
         $resultado->user_id = 1;
         $resultado->save();
         return $resultado;

@@ -17,6 +17,7 @@ class CreateResultadosTable extends Migration
             $table->increments('id');
 
             $table->string('letra');
+            $table->string('ip');
             $table->integer('pregunta_id')->unsigned();
             $table->foreign('pregunta_id')->references('id')->on('preguntas');
             $table->integer('user_id')->unsigned();

@@ -2,7 +2,7 @@
     <div class="panel panel-info">
         <div class="panel-body">
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-5">
                     <div v-if="editModeP">
                         <input type="text" class="form-control" v-model="pregunta.descripcion">
                         <input type="number" class="form-control" v-model="pregunta.tiempo">
@@ -19,13 +19,13 @@
                     </div>
                     <hr>
                 </div>
-                <div class="col-md-5">
-                    <button v-if="editModeP" class="btn btn-success" v-on:click="onClickUpdatePregunta()">Guardar</button>
-                    <button v-else class="btn btn-warning" v-on:click="onClickEditPregunta()">Editar</button>
-                    <button class="btn btn-danger" v-on:click.prevent="onClickDeletePregunta(pregunta)">Eliminar</button>
-                    <button v-if="!newResp" class="btn btn-info" v-on:click="onClickNewResp()">Nueva resp</button>
+                <div class="col-md-7">
+                    <button v-if="editModeP" class="btn btn-success" v-on:click="onClickUpdatePregunta()" title="Guardar">Guardar</button>
+                    <button v-else class="btn btn-warning" v-on:click="onClickEditPregunta()" title="Editar">Editar</button><i class="fa fa-edit"></i>
+                    <button class="btn btn-danger" v-on:click.prevent="onClickDeletePregunta(pregunta)" title="Eliminar">Eliminar</button>
+                    <button v-if="!newResp" class="btn btn-info" v-on:click="onClickNewResp()" title="Agregar respuesta">+ resp</button>
+                    <button class="btn btn-success" v-on:click="graficar(pregunta)" title="Graficar">Graficar</button>
                 </div>
-                
             </div>
             <div v-if="newResp" class="row">
                 <div class="panel panel-default">
@@ -146,6 +146,13 @@
                     .then((response) => {
                         this.$emit('getPreguntas');
                     });
+            },
+            graficar(pregunta){
+               const params = {
+                    pregunta: pregunta.id,
+                    desactivar: false
+                };
+                location.href = '/'; 
             }
         }
     }
