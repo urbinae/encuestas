@@ -134,6 +134,7 @@
                     .then((response) => {
                         this.$emit('getPreguntas');
                         this.$emit('preguntaActual', pregunta);
+                        //EventBus.$emit('activar', pregunta);
                     });
             },
             desactivarPregunta(pregunta){
@@ -152,7 +153,7 @@
                     pregunta: pregunta.id,
                     desactivar: false
                 };
-                location.href = '/'; 
+                location.href = '/  '; 
             }
         }
     }

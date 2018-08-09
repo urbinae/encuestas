@@ -22,7 +22,7 @@
 			                        	</label>
 			                      </div> <br>
 			                    </div>
-			                    <button class="btn btn-info">responder</button>
+			                    <button class="btn btn-info">Enviar</button>
 		                    	</div>
 		                    	 
 		                    </div>
@@ -52,32 +52,49 @@
             };
         },
         mounted() {
-            console.log('Component encuestados.')
-            this.pregunta = this.preguntaActiva();
+            console.log('Component encuestados.');
+            this.preguntaActiva();
         },
         methods:{
             preguntaActiva(){
 				console.log('--Activa()---');
 				const params = {                    
                 };
+                var aux;
 	            axios.post(`/preguntas/activa`)
 	                .then((response) => {
-	                    this.pregunta = response.data.pregunta;
+	                    aux = response.data.pregunta;
 	                    console.info(this.pregunta);
+	                    if (aux != 0) {
+	                    	this.pregunta = aux;
+	                    	this.activa = true;
+	                    } else {
+	                    	this.activa = false;
+	                    }
 	                    
-                });                
+                });  
+
             },
             responder(){
+            	if (this.respuesta == '') {
+            		alert('Seleccione una respuesta');
+            		return;
+            	}
+            	
                 const params = {
                     letra: this.respuesta,
                     pregunta: this.pregunta.id
                 };
-                console.info(params);
                 axios.post('/preguntas/responder', params)
                     .then((response) => {
                     	console.info(response);
                     });
             },
+            activada() {
+			    EventBus.$on('activar', function (pregunta) {
+			        alert('pregunta');
+			    }.bind(this));
+			}
         }
     }
 </script>

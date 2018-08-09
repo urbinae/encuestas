@@ -20,4 +20,6 @@ class ResultadoController extends Controller
         $resultados = Resultado::where('pregunta_id', $pregunta_id)->get();
         return $resultados->toJson();
     }
+
+    
 }

@@ -111,19 +111,25 @@ class PreguntaController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Obtiene la pregunta activa.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id identificador de la pregunta a activar
      * @return \Illuminate\Http\Response
      */
     public function activa(Request $request){
-        $pregunta = Pregunta::where('activa', true)->get()[0];
-        $response['pregunta'] = $pregunta;
-
-        $respuestas = $pregunta->respuestas;
-        $response['respuestas'] = $respuestas;
-        return $response;
+        $pregunta = Pregunta::where('activa', true)->get();
+        if (!$pregunta->isEmpty()) {
+            $pregunta = $pregunta[0];
+            $response['pregunta'] = $pregunta;
+            $respuestas = $pregunta->respuestas;
+            $response['respuestas'] = $respuestas; 
+            return $response;
+        }
+        else{
+            $response['pregunta'] = 0;
+            return $response;
+        }
     }
 
     /**
@@ -137,7 +143,7 @@ class PreguntaController extends Controller
         $resultado->letra = $request->letra;
         $resultado->pregunta_id = $request->pregunta;
         $resultado->ip = '1.1.1.1';
-        $resultado->user_id = 1;
+        $resultado->user_id = auth()->id();
         $resultado->save();
         return $resultado;
     }

@@ -24,3 +24,5 @@ Vue.component('encuestados-component', require('./components/EncuestadosComponen
 const app = new Vue({
     el: '#app'
 });
+
+var EventBus = new Vue();
