@@ -1072,7 +1072,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(11);
-module.exports = __webpack_require__(54);
+module.exports = __webpack_require__(57);
 
 
 /***/ }),
@@ -1100,10 +1100,13 @@ Vue.component('form-preguntas-component', __webpack_require__(42));
 Vue.component('preguntas-component', __webpack_require__(45));
 Vue.component('respuestas-component', __webpack_require__(48));
 Vue.component('form-respuestas-component', __webpack_require__(51));
+Vue.component('encuestados-component', __webpack_require__(54));
 
 var app = new Vue({
   el: '#app'
 });
+
+var EventBus = new Vue();
 
 /***/ }),
 /* 12 */
@@ -43756,9 +43759,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.delete('/respuestas/' + respuesta.id).then(function () {
                 _this2.$emit('getPreguntas');
             });
-            //this.respuestas.splice(index, 1);
         },
-        onClickActivarPregunta: function onClickActivarPregunta(pregunta) {
+        activarPregunta: function activarPregunta(pregunta) {
             var _this3 = this;
 
             var params = {
@@ -43767,10 +43769,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             };
             console.info(params);
             axios.post('/preguntas/activar', params).then(function (response) {
-                //const pregunta = response.data;
-                //this.$emit('updatePregunta', pregunta);
                 _this3.$emit('getPreguntas');
+                _this3.$emit('preguntaActual', pregunta);
+                //EventBus.$emit('activar', pregunta);
             });
+        },
+        desactivarPregunta: function desactivarPregunta(pregunta) {
+            var _this4 = this;
+
+            var params = {
+                pregunta: pregunta.id,
+                desactivar: false
+            };
+            console.info(params);
+            axios.post('/preguntas/desactivar', params).then(function (response) {
+                _this4.$emit('getPreguntas');
+            });
+        },
+        graficar: function graficar(pregunta) {
+            var params = {
+                pregunta: pregunta.id,
+                desactivar: false
+            };
+            location.href = '/  ';
         }
     }
 });
@@ -43789,7 +43810,7 @@ var render = function() {
       { staticClass: "panel-body" },
       [
         _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-7" }, [
+          _c("div", { staticClass: "col-md-5" }, [
             _vm.editModeP
               ? _c("div", [
                   _c("input", {
@@ -43844,19 +43865,27 @@ var render = function() {
                   _c("p"),
                   _vm.pregunta.activa
                     ? _c("div", [
-                        _vm._v(
-                          "\n                        Activada \n                    "
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            on: {
+                              click: function($event) {
+                                _vm.desactivarPregunta(_vm.pregunta)
+                              }
+                            }
+                          },
+                          [_vm._v("Desactivar")]
                         )
                       ])
                     : _c("div", [
-                        _vm._v("\n                        Desactivada "),
                         _c(
                           "button",
                           {
                             staticClass: "btn btn-success",
                             on: {
                               click: function($event) {
-                                _vm.onClickActivarPregunta(_vm.pregunta)
+                                _vm.activarPregunta(_vm.pregunta)
                               }
                             }
                           },
@@ -43878,12 +43907,13 @@ var render = function() {
             _c("hr")
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "col-md-5" }, [
+          _c("div", { staticClass: "col-md-7" }, [
             _vm.editModeP
               ? _c(
                   "button",
                   {
                     staticClass: "btn btn-success",
+                    attrs: { title: "Guardar" },
                     on: {
                       click: function($event) {
                         _vm.onClickUpdatePregunta()
@@ -43896,6 +43926,7 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-warning",
+                    attrs: { title: "Editar" },
                     on: {
                       click: function($event) {
                         _vm.onClickEditPregunta()
@@ -43904,11 +43935,13 @@ var render = function() {
                   },
                   [_vm._v("Editar")]
                 ),
+            _c("i", { staticClass: "fa fa-edit" }),
             _vm._v(" "),
             _c(
               "button",
               {
                 staticClass: "btn btn-danger",
+                attrs: { title: "Eliminar" },
                 on: {
                   click: function($event) {
                     $event.preventDefault()
@@ -43924,15 +43957,30 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-info",
+                    attrs: { title: "Agregar respuesta" },
                     on: {
                       click: function($event) {
                         _vm.onClickNewResp()
                       }
                     }
                   },
-                  [_vm._v("Nueva resp")]
+                  [_vm._v("+ resp")]
                 )
-              : _vm._e()
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { title: "Graficar" },
+                on: {
+                  click: function($event) {
+                    _vm.graficar(_vm.pregunta)
+                  }
+                }
+              },
+              [_vm._v("Graficar")]
+            )
           ])
         ]),
         _vm._v(" "),
@@ -44447,6 +44495,279 @@ if (false) {
 
 /***/ }),
 /* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(55)
+/* template */
+var __vue_template__ = __webpack_require__(56)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\EncuestadosComponent.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-369a61fc", Component.options)
+  } else {
+    hotAPI.reload("data-v-369a61fc", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            pregunta: null,
+            activa: true,
+            respuestas: [],
+            respuesta: '',
+            respondio: true
+        };
+    },
+    mounted: function mounted() {
+        console.log('Component encuestados.');
+        this.preguntaActiva();
+    },
+
+    methods: {
+        preguntaActiva: function preguntaActiva() {
+            var _this = this;
+
+            console.log('--Activa()---');
+            var params = {};
+            var aux;
+            axios.post('/preguntas/activa').then(function (response) {
+                aux = response.data.pregunta;
+                console.info(_this.pregunta);
+                if (aux != 0) {
+                    _this.pregunta = aux;
+                    _this.activa = true;
+                } else {
+                    _this.activa = false;
+                }
+            });
+        },
+        responder: function responder() {
+            if (this.respuesta == '') {
+                alert('Seleccione una respuesta');
+                return;
+            }
+
+            var params = {
+                letra: this.respuesta,
+                pregunta: this.pregunta.id
+            };
+            axios.post('/preguntas/responder', params).then(function (response) {
+                console.info(response);
+            });
+        },
+        activada: function activada() {
+            EventBus.$on('activar', function (pregunta) {
+                alert('pregunta');
+            }.bind(this));
+        }
+    }
+});
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "flex-center" }, [
+      _c("div", { staticClass: "content" }, [
+        _c("div", { staticClass: "title" }, [
+          _vm._v("\n                Encuesta\n            ")
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "panel panel-default" }, [
+          _c("div", { staticClass: "panel-body" }, [
+            _c(
+              "form",
+              {
+                attrs: { action: "" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    _vm.responder()
+                  }
+                }
+              },
+              [
+                _vm.activa
+                  ? _c("div", { staticClass: "row" }, [
+                      !_vm.respondio
+                        ? _c("div", [
+                            _vm._v(
+                              "\n\t                    \t\tYa respondiste a la pregunta\n\t                    \t"
+                            )
+                          ])
+                        : _c(
+                            "div",
+                            [
+                              _vm._v(
+                                "\n\t                    \t\t" +
+                                  _vm._s(_vm.pregunta.descripcion) +
+                                  " - " +
+                                  _vm._s(_vm.pregunta.tiempo) +
+                                  " Seg.\n\t                        "
+                              ),
+                              _vm._l(_vm.pregunta.respuestas, function(resp) {
+                                return _c("div", [
+                                  _c("div", { staticClass: "radio" }, [
+                                    _c("label", [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.respuesta,
+                                            expression: "respuesta"
+                                          }
+                                        ],
+                                        attrs: {
+                                          type: "radio",
+                                          name: "respuesta"
+                                        },
+                                        domProps: {
+                                          value: resp.letra,
+                                          checked: _vm._q(
+                                            _vm.respuesta,
+                                            resp.letra
+                                          )
+                                        },
+                                        on: {
+                                          change: function($event) {
+                                            _vm.respuesta = resp.letra
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(
+                                        " " +
+                                          _vm._s(resp.letra) +
+                                          " - " +
+                                          _vm._s(resp.descripcion) +
+                                          "\n\t\t                        \t"
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("br")
+                                ])
+                              }),
+                              _vm._v(" "),
+                              _c("button", { staticClass: "btn btn-info" }, [
+                                _vm._v("Enviar")
+                              ])
+                            ],
+                            2
+                          )
+                    ])
+                  : _c("div", { staticClass: "row" }, [
+                      _vm._v(
+                        "\n\t                        No hay preguntas para responder\n\t                        \n\t                  \t"
+                      )
+                    ])
+              ]
+            )
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-369a61fc", module.exports)
+  }
+}
+
+/***/ }),
+/* 57 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
