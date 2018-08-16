@@ -139,13 +139,33 @@ class PreguntaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function responder(Request $request){
-        $resultado = new Resultado();
-        $resultado->letra = $request->letra;
-        $resultado->pregunta_id = $request->pregunta;
-        $resultado->ip = '1.1.1.1';
-        $resultado->user_id = auth()->id();
-        $resultado->save();
-        return $resultado;
+        $resultado = Resultado::where('ip', $request->ip)->where('pregunta_id', $request->pregunta)->get();
+        if (!$resultado->isEmpty()) {
+            return 1;
+        }else{
+            $resultado = new Resultado();
+            $resultado->letra = $request->letra;
+            $resultado->pregunta_id = $request->pregunta;
+            $resultado->ip = $request->ip;
+            $resultado->user_id = auth()->id();
+            $resultado->save();
+            return $resultado;
+        }
+    }
+
+    /**
+     * Verificar ip.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function ipValidate(Request $request){
+        $resultado = Resultado::where('ip', $request->ip)->where('pregunta_id', $request->pregunta)->get();
+        if (!$resultado->isEmpty()) {
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
 }
