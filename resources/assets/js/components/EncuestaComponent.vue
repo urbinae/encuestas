@@ -15,7 +15,9 @@
                 @getPreguntas="getPreguntas()">
                 
 	        </preguntas-component>
+            
 	    </div>
+        
 	</div>
     
 </template>

@@ -29,3 +29,4 @@ Route::post('/preguntas/activa', 'PreguntaController@activa');
 Route::post('/preguntas/responder', 'PreguntaController@responder');
 
 Route::get('consulta', 'RespuestaController@consulta');
+Route::post('grafica', 'ResultadoController@grafica');

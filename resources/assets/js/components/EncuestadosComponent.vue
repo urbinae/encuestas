@@ -10,7 +10,7 @@
 	                <div class="panel-body">
 	                	<form action="" v-on:submit.prevent="responder()">
 		                    <div class="row" v-if="activa">
-		                    	<div v-if="!respondio">
+		                    	<div v-if="respondio">
 		                    		Ya respondiste a la pregunta
 		                    	</div>
 		                    	<div v-else>
@@ -22,7 +22,9 @@
 			                        	</label>
 			                      </div> <br>
 			                    </div>
-			                    <button class="btn btn-info">Enviar</button>
+			                    <div v-if="pregunta.respuestas.length">
+			                    	<button class="btn btn-info">Enviar</button>
+			                    </div>
 		                    	</div>
 		                    	 
 		                    </div>
@@ -48,53 +50,59 @@
             	activa:true,
             	respuestas:[],
             	respuesta:'',
-            	respondio:true
+            	respondio:false
             };
         },
         mounted() {
             console.log('Component encuestados.');
-            this.preguntaActiva();
+            this.preguntaActiva();    
+            
         },
         methods:{
             preguntaActiva(){
-				console.log('--Activa()---');
 				const params = {                    
                 };
                 var aux;
 	            axios.post(`/preguntas/activa`)
 	                .then((response) => {
 	                    aux = response.data.pregunta;
-	                    console.info(this.pregunta);
 	                    if (aux != 0) {
 	                    	this.pregunta = aux;
 	                    	this.activa = true;
+	                    	const params = {
+			                    letra: this.respuesta,
+			                    pregunta: this.pregunta.id,
+			                    ip: $( "#ipadress" ).attr('value')                   
+			                };
+			                axios.post('/preguntas/responder', params)
+			                    .then((response) => {
+			                    	if (response.data==1) {
+			                    		this.respondio = true
+			                    	}
+			                });
 	                    } else {
 	                    	this.activa = false;
 	                    }
-	                    
                 });  
-
             },
             responder(){
             	if (this.respuesta == '') {
             		alert('Seleccione una respuesta');
             		return;
             	}
-            	
                 const params = {
                     letra: this.respuesta,
-                    pregunta: this.pregunta.id
+                    pregunta: this.pregunta.id,
+                    ip: $( "#ipadress" ).attr('value')                   
                 };
                 axios.post('/preguntas/responder', params)
                     .then((response) => {
-                    	console.info(response);
-                    });
-            },
-            activada() {
-			    EventBus.$on('activar', function (pregunta) {
-			        alert('pregunta');
-			    }.bind(this));
-			}
+                    	if (response.data==1) {
+                    		this.respondio = true
+                    		alert('Gracias por responder');
+                    	}
+                });
+            }
         }
-    }
+    };
 </script>
