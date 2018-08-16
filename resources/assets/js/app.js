@@ -14,15 +14,16 @@ window.Vue = require('vue');
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
 Vue.component('encuesta-component', require('./components/EncuestaComponent.vue'));
 Vue.component('form-preguntas-component', require('./components/FormPreguntasComponent.vue'));
 Vue.component('preguntas-component', require('./components/PreguntasComponent.vue'));
 Vue.component('respuestas-component', require('./components/RespuestasComponent.vue'));
 Vue.component('form-respuestas-component', require('./components/FormRespuestasComponent.vue'));
 Vue.component('encuestados-component', require('./components/EncuestadosComponent.vue'));
+Vue.component('graph-component', require('./components/graph/graphComponent.vue'));
+
 
 const app = new Vue({
     el: '#app'
 });
-
-var EventBus = new Vue();
