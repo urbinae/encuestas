@@ -19,5 +19,10 @@
         "prettier": "1.12.1",
         "vue": "^2.1.10",
         "vue-template-compiler": "^2.5.16"
+    },
+    "dependencies": {
+        "chart.js": "^2.7.2",
+        "vue-chart.js": "^0.2.0",
+        "vue-chartjs": "^3.4.0"
     }
 }
