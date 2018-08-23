@@ -20,7 +20,7 @@ class PreguntaController extends Controller
      */
     public function index()
     {
-        $preguntas = Pregunta::with('respuestas')->where('user_id', auth()->id())->get();
+        $preguntas = Pregunta::with('respuestas')->get();
         return $preguntas->toJson();
     }
 

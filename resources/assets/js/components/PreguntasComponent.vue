@@ -54,7 +54,7 @@
             @updateR="updateRespuesta(index)">
 
         </respuestas-component>
-        <canvas v-bind:id="pregunta.id"></canvas>
+        <canvas v-bind:id="pregunta.id" style='display:none;'></canvas>
     </div>
 </div>
 
@@ -166,6 +166,7 @@ export default {
                 });                
             },
             setGraph(x, y, tag){
+                document.getElementById(tag).style.display = 'block';
                 var chratData = {
                     labels: x,
                     datasets: [
@@ -184,12 +185,12 @@ export default {
                 }
                 var options = {
                         responsive: true,
-                        lineTension: 10,
+                        lineTension: 0,
                         scales: {
                             yAxes: [{
                                 ticks: {
                                     beginAtZero: true,
-                                    padding: 25,
+                                    padding: 5,
                                 }
                             }]
                         }

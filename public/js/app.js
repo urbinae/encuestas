@@ -62610,6 +62610,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         setGraph: function setGraph(x, y, tag) {
+            document.getElementById(tag).style.display = 'block';
             var chratData = {
                 labels: x,
                 datasets: [{ // one line graph
@@ -62620,12 +62621,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             };
             var options = {
                 responsive: true,
-                lineTension: 10,
+                lineTension: 0,
                 scales: {
                     yAxes: [{
                         ticks: {
                             beginAtZero: true,
-                            padding: 25
+                            padding: 5
                         }
                     }]
                 }
@@ -75383,7 +75384,10 @@ var render = function() {
           })
         }),
         _vm._v(" "),
-        _c("canvas", { attrs: { id: _vm.pregunta.id } })
+        _c("canvas", {
+          staticStyle: { display: "none" },
+          attrs: { id: _vm.pregunta.id }
+        })
       ],
       2
     )
@@ -76010,7 +76014,13 @@ var render = function() {
                       _vm.respondio
                         ? _c("div", [
                             _vm._v(
-                              "\n\t                    \t\tYa respondiste a la pregunta\n\t                    \t"
+                              "\n\t                    \t\tGracias por responder la pregunta "
+                            ),
+                            _c("br"),
+                            _vm._v(
+                              " " +
+                                _vm._s(_vm.pregunta.descripcion) +
+                                "\n\t                    \t"
                             )
                           ])
                         : _c(

@@ -11,7 +11,7 @@
 	                	<form action="" v-on:submit.prevent="responder()">
 		                    <div class="row" v-if="activa">
 		                    	<div v-if="respondio">
-		                    		Ya respondiste a la pregunta
+		                    		Gracias por responder la pregunta <br> {{pregunta.descripcion}}
 		                    	</div>
 		                    	<div v-else>
 		                    		{{pregunta.descripcion}} - {{pregunta.tiempo}} Seg.
