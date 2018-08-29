@@ -10,6 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::view('template1', 'admin.index');
+Route::view('template2', 'admin.index2');
 
 Route::get('/', function () {
 	$preguntas = Pregunta::where('activa', true)->get();
@@ -30,3 +32,5 @@ Route::post('/preguntas/responder', 'PreguntaController@responder');
 
 Route::get('consulta', 'RespuestaController@consulta');
 Route::post('grafica', 'ResultadoController@grafica');
+
+
